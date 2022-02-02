@@ -41,5 +41,11 @@ namespace MetaWeatherService.Models
         [JsonPropertyName("distance")]
         public int Distance { get; set; }
 
+
+        /// <summary>
+        /// Перегрузка метода ToString()
+        /// </summary>
+        /// <returns></returns>
+        public override string ToString() => $"{Id}. {Type} {Title}({Location.latitude}, {Location.longitude}) - {Distance:0,0} m.";
     }
 }

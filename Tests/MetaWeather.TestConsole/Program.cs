@@ -3,6 +3,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using System;
+using System.Globalization;
 using System.Threading.Tasks;
 
 namespace MetaWeather.TestConsole
@@ -23,8 +24,15 @@ namespace MetaWeather.TestConsole
             await host.StartAsync();
 
             var weatherService = Services.GetRequiredService<MetaWeatherClient>();
-           
-            var location = await weatherService.GetLocation($"{relPaths.LocationByName}Moscow");
+
+            // - местоположение по названию
+            var queryByName = $"{relPaths.LocationByName}Moscow";
+            var locationByName = await weatherService.GetLocation(queryByName);
+
+            // - местоположение по координатам
+            var pleaceLocation = locationByName[0].Location;
+            var queryByCoord = $"{relPaths.LocationByCoord}{pleaceLocation.latitude.ToString(CultureInfo.InvariantCulture)},{pleaceLocation.longitude.ToString(CultureInfo.InvariantCulture)}";
+            var locationByCoord = await weatherService.GetLocation(queryByCoord);
 
 
             Console.WriteLine("Завершено");

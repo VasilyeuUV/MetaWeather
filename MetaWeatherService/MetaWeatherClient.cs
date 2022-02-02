@@ -45,6 +45,5 @@ namespace MetaWeatherService
                 .GetFromJsonAsync<LocalityModel[]>(query, /*__jsonOptions,*/ cancel)    // __jsonOptions - настройки сериализации
                 .ConfigureAwait(false);
         }
-
     }
 }
