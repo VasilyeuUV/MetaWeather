@@ -1,4 +1,6 @@
-﻿using Microsoft.Extensions.DependencyInjection;
+﻿using MetaWeatherService;
+using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using System;
 using System.Threading.Tasks;
@@ -7,10 +9,23 @@ namespace MetaWeather.TestConsole
 {
     class Program
     {
+
         static async Task Main(string[] args)
         {
-            using var host = Hosting;
+            // Получаем данные из конфигурации
+            IConfiguration config = new ConfigurationBuilder()
+                .AddJsonFile("appsettings.json")
+                .AddEnvironmentVariables()
+                .Build();
+            RelationPaths relPaths = config.GetRequiredSection("RelationPaths").Get<RelationPaths>();
+
+            using IHost host = Hosting;
             await host.StartAsync();
+
+            var weatherService = Services.GetRequiredService<MetaWeatherClient>();
+           
+            var location = await weatherService.GetLocation($"{relPaths.LocationByName}Moscow");
+
 
             Console.WriteLine("Завершено");
             Console.ReadLine();
@@ -55,8 +70,12 @@ namespace MetaWeather.TestConsole
         /// <param name="arg2"></param>
         private static void ConfigureServices(HostBuilderContext host, IServiceCollection services)
         {
-            // регистрируем сервисы
+            // РЕГИСТРАЦИЯ СЕРВИСОВ
 
+            // - сервис получения данных о погоде
+            services.AddHttpClient<MetaWeatherClient>(client =>                     // - конфигурация сервиса
+                client.BaseAddress = new Uri(host.Configuration["MetaWeather"])     // - получаем базовый URL
+                );
         }
 
         #endregion // Hosting
