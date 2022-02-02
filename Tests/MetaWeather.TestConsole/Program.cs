@@ -26,13 +26,10 @@ namespace MetaWeather.TestConsole
             var weatherService = Services.GetRequiredService<MetaWeatherClient>();
 
             // - местоположение по названию
-            var queryByName = $"{relPaths.LocationByName}Moscow";
-            var locationByName = await weatherService.GetLocation(queryByName);
+            var locationByName = await weatherService.GetLocation(relPaths.LocationByName, "Moscow");
 
             // - местоположение по координатам
-            var pleaceLocation = locationByName[0].Location;
-            var queryByCoord = $"{relPaths.LocationByCoord}{pleaceLocation.latitude.ToString(CultureInfo.InvariantCulture)},{pleaceLocation.longitude.ToString(CultureInfo.InvariantCulture)}";
-            var locationByCoord = await weatherService.GetLocation(queryByCoord);
+            var locationByCoord = await weatherService.GetLocation(relPaths.LocationByCoord, locationByName[0].Location);
 
 
             Console.WriteLine("Завершено");
