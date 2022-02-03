@@ -40,10 +40,10 @@ namespace MetaWeatherService
         /// </summary>
         /// <param name="name">Название города</param>
         /// <returns></returns>
-        public async Task<LocalityModel[]> GetLocation(string path, string name, CancellationToken cancel = default)
+        public async Task<LocalityDistanceModel[]> GetLocation(string path, string name, CancellationToken cancel = default)
         {            
             return await _client
-                .GetFromJsonAsync<LocalityModel[]>($"{path}{name}", /*__jsonOptions,*/ cancel)    // __jsonOptions - настройки сериализации
+                .GetFromJsonAsync<LocalityDistanceModel[]>($"{path}{name}", /*__jsonOptions,*/ cancel)    // __jsonOptions - настройки сериализации
                 .ConfigureAwait(false);
         }
 
@@ -54,14 +54,20 @@ namespace MetaWeatherService
         /// <param name="location">кортеж координат</param>
         /// <param name="cancel"></param>
         /// <returns></returns>
-        public async Task<LocalityModel[]> GetLocation(string path, (double latitude, double longitude) location, CancellationToken cancel = default)
+        public async Task<LocalityDistanceModel[]> GetLocation(string path, (double latitude, double longitude) location, CancellationToken cancel = default)
         {
             var coordinates = $"{location.latitude.ToString(CultureInfo.InvariantCulture)},{location.longitude.ToString(CultureInfo.InvariantCulture)}";
             return await _client
-                .GetFromJsonAsync<LocalityModel[]>($"{path}{coordinates}", cancel)
+                .GetFromJsonAsync<LocalityDistanceModel[]>($"{path}{coordinates}", cancel)
                 .ConfigureAwait(false);
         }
 
+
+        public async Task<WeatherInfoModel> GetWeatheInfo(string path, int id, CancellationToken cancel = default)
+        {
+            return await _client
+                .GetFromJsonAsync<WeatherInfoModel>(string.Format(path, id, cancel)).ConfigureAwait(false);
+        }
 
     }
 }

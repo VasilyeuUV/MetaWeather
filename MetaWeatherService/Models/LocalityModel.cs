@@ -33,19 +33,7 @@ namespace MetaWeatherService.Models
         /// </summary>
         [JsonPropertyName("latt_long")]
         [JsonConverter(typeof(JsonCoordinateConverter))]
-        public (double latitude, double longitude) Location { get; set; }       // - используем кортеж для координат
+        public (double latitude, double longitude) Coordinates { get; set; }       // - используем кортеж для координат
 
-        /// <summary>
-        /// Расстояние до точки местности в метрах
-        /// </summary>
-        [JsonPropertyName("distance")]
-        public int Distance { get; set; }
-
-
-        /// <summary>
-        /// Перегрузка метода ToString()
-        /// </summary>
-        /// <returns></returns>
-        public override string ToString() => $"{Id}. {Type} {Title}({Location.latitude}, {Location.longitude}) - {Distance:0,0} m.";
     }
 }

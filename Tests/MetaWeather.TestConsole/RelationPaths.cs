@@ -11,5 +11,10 @@
         /// API запрос по координатам
         /// </summary>
         public string LocationByCoord { get; set; }
+
+        /// <summary>
+        /// API запрос информации по ID места 
+        /// </summary>
+        public string InfoById { get; set; }
     }
 }
