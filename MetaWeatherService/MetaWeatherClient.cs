@@ -34,6 +34,8 @@ namespace MetaWeatherService
         /// </summary>
         public MetaWeatherClient(HttpClient client) => this._client = client;
 
+        //##############################################################################################################
+        #region Данные о местности
 
         /// <summary>
         /// Получить данные местности по названию
@@ -41,7 +43,7 @@ namespace MetaWeatherService
         /// <param name="name">Название города</param>
         /// <returns></returns>
         public async Task<LocalityDistanceModel[]> GetLocation(string path, string name, CancellationToken cancel = default)
-        {            
+        {
             return await _client
                 .GetFromJsonAsync<LocalityDistanceModel[]>($"{path}{name}", /*__jsonOptions,*/ cancel)    // __jsonOptions - настройки сериализации
                 .ConfigureAwait(false);
@@ -62,12 +64,36 @@ namespace MetaWeatherService
                 .ConfigureAwait(false);
         }
 
+        #endregion // Данные о местности
 
+
+        //##############################################################################################################
+        #region Данные о погоде
+
+        /// <summary>
+        /// Получение информации о погоде по id местности
+        /// </summary>
+        /// <param name="path"></param>
+        /// <param name="id"></param>
+        /// <param name="cancel"></param>
+        /// <returns></returns>
         public async Task<WeatherInfoModel> GetWeatheInfo(string path, int id, CancellationToken cancel = default)
         {
             return await _client
-                .GetFromJsonAsync<WeatherInfoModel>(string.Format(path, id, cancel)).ConfigureAwait(false);
+                .GetFromJsonAsync<WeatherInfoModel>(string.Format(path, id, cancel))
+                .ConfigureAwait(false);
         }
 
+        /// <summary>
+        /// Получение информации о погоде из объекта местности
+        /// </summary>
+        /// <param name="path"></param>
+        /// <param name="weather"></param>
+        /// <param name="cancel"></param>
+        /// <returns></returns>
+        public Task<WeatherInfoModel> GetWeatheInfo(string path, LocalityModel locality, CancellationToken cancel = default) =>
+            GetWeatheInfo(path, locality.Id, cancel);
+
+        #endregion // Данные о погоде
     }
 }

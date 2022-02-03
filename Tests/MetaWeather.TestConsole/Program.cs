@@ -31,8 +31,12 @@ namespace MetaWeather.TestConsole
             // - местоположение по координатам
             var locationByCoord = await weatherService.GetLocation(relPaths.LocationByCoord, locationByName[0].Coordinates);
 
-            // - информация о погоде
-            var weatherInfo = await weatherService.GetWeatheInfo(relPaths.InfoById, locationByName[0].Id);
+            // - информация о погоде по id местности
+            var weatherInfoByLocalityId = await weatherService.GetWeatheInfo(relPaths.InfoById, locationByName[0].Id);
+
+            // - информация о погоде по объекту меcтности
+            var weatherInfoByLocality = await weatherService.GetWeatheInfo(relPaths.InfoById, locationByName[0]);
+
 
             Console.WriteLine("Завершено");
             Console.ReadLine();
