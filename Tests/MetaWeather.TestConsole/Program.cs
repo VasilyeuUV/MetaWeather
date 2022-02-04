@@ -2,7 +2,10 @@
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using Polly;
+using Polly.Extensions.Http;
 using System;
+using System.Net.Http;
 using System.Threading.Tasks;
 
 namespace MetaWeather.TestConsole
@@ -89,8 +92,31 @@ namespace MetaWeather.TestConsole
 
             // - сервис получения данных о погоде
             services.AddHttpClient<MetaWeatherClient>(client =>                     // - конфигурация сервиса
-                client.BaseAddress = new Uri(host.Configuration["MetaWeather"])     // - получаем базовый URL
-                );
+                client.BaseAddress = new Uri(host.Configuration["MetaWeather"]))    // - получаем базовый URL
+                .SetHandlerLifetime(TimeSpan.FromMinutes(5))                        // - время жизни клиента (нужны установленные расширения Ms.Ext.Http.Polly и Polly.Extentions.Http)
+                .AddPolicyHandler(GetRetryPolicy())                                 // - дополнительный политика клиента
+                ;
+        }
+
+
+        /// <summary>
+        /// Политики клиента
+        /// </summary>
+        /// <returns></returns>
+        private static IAsyncPolicy<HttpResponseMessage> GetRetryPolicy()
+        {
+            // Джиттер - для обеспечение возможности рассинхронизации доступа
+            // при большом количестве запросов на сервер от разных клиентов
+            var jitter = new Random();
+
+            return HttpPolicyExtensions
+                .HandleTransientHttpError()                                         // - перехватываем возможные ошибки процесса соединения с сервером
+                .WaitAndRetryAsync(                                                 // - если сервер недоступен, то Http повторит запрос
+                    6,                                                              // -- 6 раз
+                    retry_attempt =>                                                // -- номер повтора
+                        TimeSpan.FromSeconds(Math.Pow(2, retry_attempt)) +          // --- через время с прогрессией в 2 секунды в зависимости от номера повтора
+                        TimeSpan.FromMilliseconds(jitter.Next(0, 1000)))            // --- со случайной рассинхронизацией времени запроса в 1 миллисекунду
+                ;
         }
 
         #endregion // Hosting
