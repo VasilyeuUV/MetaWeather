@@ -3,7 +3,6 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using System;
-using System.Globalization;
 using System.Threading.Tasks;
 
 namespace MetaWeather.TestConsole
@@ -37,6 +36,11 @@ namespace MetaWeather.TestConsole
             // - информация о погоде по объекту меcтности
             var weatherInfoByLocality = await weatherService.GetWeatheInfo(relPaths.InfoById, locationByName[0]);
 
+            // - информация о погоде по id местности и дате
+            var weatherInfoByDateLocalityId = await weatherService.GetWeatherInfo(relPaths.InfoByIdDate, locationByName[0].Id, DateTime.Now);
+
+            // - информация о погоде по объекту местности и дате
+            var weatherInfoByDateLocality = await weatherService.GetWeatherInfo(relPaths.InfoByIdDate, locationByName[0], DateTime.Now);
 
             Console.WriteLine("Завершено");
             Console.ReadLine();

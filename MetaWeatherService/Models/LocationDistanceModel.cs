@@ -5,7 +5,7 @@ namespace MetaWeatherService.Models
     /// <summary>
     /// Модель данных о населенном пункте  (местности)
     /// </summary>
-    public class LocalityDistanceModel : LocalityModel
+    public class LocationDistanceModel : LocationModel
     {
 
         /// <summary>

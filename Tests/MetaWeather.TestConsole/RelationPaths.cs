@@ -16,5 +16,10 @@
         /// API запрос информации по ID места 
         /// </summary>
         public string InfoById { get; set; }
+
+        /// <summary>
+        /// PI запрос информации по ID места и дате в формате YYYY/MM/DD
+        /// </summary>
+        public string InfoByIdDate { get; set; }
     }
 }
