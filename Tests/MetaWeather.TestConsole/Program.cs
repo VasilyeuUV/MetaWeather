@@ -21,6 +21,8 @@ namespace MetaWeather.TestConsole
                 .AddEnvironmentVariables()
                 .Build();
             RelationPaths relPaths = config.GetRequiredSection("RelationPaths").Get<RelationPaths>();
+            // использование: relPaths.LocationByName, relPaths.LocationByCoord, ...
+            // переделка: данные из конфигурации далее не используются. относительные пути вынесены в Клиент.
 
             using IHost host = Hosting;
             await host.StartAsync();
@@ -28,22 +30,22 @@ namespace MetaWeather.TestConsole
             var weatherService = Services.GetRequiredService<MetaWeatherClient>();
 
             // - местоположение по названию
-            var locationByName = await weatherService.GetLocation(relPaths.LocationByName, "Moscow");
+            var locationByName = await weatherService.GetLocation("Moscow");
 
             // - местоположение по координатам
-            var locationByCoord = await weatherService.GetLocation(relPaths.LocationByCoord, locationByName[0].Coordinates);
+            var locationByCoord = await weatherService.GetLocation(locationByName[0].Coordinates);
 
             // - информация о погоде по id местности
-            var weatherInfoByLocalityId = await weatherService.GetWeatheInfo(relPaths.InfoById, locationByName[0].Id);
+            var weatherInfoByLocalityId = await weatherService.GetWeatheInfo(locationByName[0].Id);
 
             // - информация о погоде по объекту меcтности
-            var weatherInfoByLocality = await weatherService.GetWeatheInfo(relPaths.InfoById, locationByName[0]);
+            var weatherInfoByLocality = await weatherService.GetWeatheInfo(locationByName[0]);
 
             // - информация о погоде по id местности и дате
-            var weatherInfoByDateLocalityId = await weatherService.GetWeatherInfo(relPaths.InfoByIdDate, locationByName[0].Id, DateTime.Now);
+            var weatherInfoByDateLocalityId = await weatherService.GetWeatherInfo(locationByName[0].Id, DateTime.Now);
 
             // - информация о погоде по объекту местности и дате
-            var weatherInfoByDateLocality = await weatherService.GetWeatherInfo(relPaths.InfoByIdDate, locationByName[0], DateTime.Now);
+            var weatherInfoByDateLocality = await weatherService.GetWeatherInfo(locationByName[0], DateTime.Now);
 
             Console.WriteLine("Завершено");
             Console.ReadLine();

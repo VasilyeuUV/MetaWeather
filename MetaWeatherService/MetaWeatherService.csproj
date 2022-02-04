@@ -20,6 +20,8 @@
 		<RepositoryUrl>https://github.com/VasilyeuUV/MetaWeather.git</RepositoryUrl>
 		<RepositoryType>git</RepositoryType>
 		<PackageTags>MetaWeatherService, MetaWeather, Weather, MetaWeatherClient, WebAPI</PackageTags>
+		<PackageId>MetaWeatherApiClient</PackageId>
+		<Product>MetaWeatherApiClient</Product>
 	</PropertyGroup>
 
 	<ItemGroup>
